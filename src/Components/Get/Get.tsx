@@ -1,40 +1,50 @@
 
 import React, { useState } from 'react'
-import Crud2 from '../Crud2/Crud2'
-import Modal from '../Modal/Modal'
-import { Button, Input, Select } from 'antd'
+import { Button } from "@/components/ui/button"
+import Crud2 from '../../Components/Crud2/Crud2'
+import Modal from '../../Components/Modal/Modal'
+
+interface Obj {
+    id: number
+    img: string
+    name: string
+    age: number
+    job: string
+    status: boolean
+}
 
 const Get = () => {
-    const [data, setdata] = useState([
+
+    const [data, setdata] = useState<Obj[]>([
         { id: 1, img: 'https://i.pravatar.cc/150?img=12', name: 'Abubakr', age: 22, job: 'Frontend Developer', status: true },
         { id: 2, img: 'https://i.pravatar.cc/150?img=13', name: 'Ismatullo', age: 23, job: 'Backend Developer', status: true },
         { id: 3, img: 'https://i.pravatar.cc/150?img=14', name: 'Umar', age: 22, job: 'Cleaner', status: false },
         { id: 4, img: 'https://i.pravatar.cc/150?img=15', name: 'Ali', age: 22, job: 'Engineer', status: true }
     ])
 
-    const [modaladd, setmodaladd] = useState(false)
-    const [modaledit, setmodaledit] = useState(false)
-    const [nameinp, setnameinp] = useState("")
-    const [ageinp, setageinp] = useState("")
-    const [jobinp, setjobinp] = useState("")
-    const [imginp, setimginp] = useState("")
-    const [statusinp, setstatusinp] = useState("true")
-    const [idx, setidx] = useState(null)
+    const [modaladd, setmodaladd] = useState<boolean>(false)
+    const [modaledit, setmodaledit] = useState<boolean>(false)
+    const [nameinp, setnameinp] = useState<string>("")
+    const [ageinp, setageinp] = useState<number | string>("")
+    const [jobinp, setjobinp] = useState<string>("")
+    const [imginp, setimginp] = useState<string>("")
+    const [statusinp, setstatusinp] = useState<string>("true")
+    const [idx, setidx] = useState<number>(0)
 
-    const Deletedata = (id) => {
+    const Deletedata = (id: number) => {
         setdata((prev) => prev.filter((el) => el.id !== id))
     }
 
-    const handlesubmit = (event) => {
+    const handlesubmit = (event: any) => {
         event.preventDefault()
 
-        const newuser = {
-       id: Date.now(),
-       name: event.target.inpname.value,
-       age: event.target.inpage.value,
-       job: event.target.inpjob.value,
-       img: event.target.inpimg.value || "https://i.pravatar.cc/150",
-       status: event.target.inpstatus.value === "true"
+        const newuser: Obj = {
+            id: Date.now(),
+            name: event.target.inpname.value,
+            age: event.target.inpage.value,
+            job: event.target.inpjob.value,
+            img: event.target.inpimg.value || "https://i.pravatar.cc/150",
+            status: event.target.inpstatus.value === "true"
         }
 
         setdata((prev) => [...prev, newuser])
@@ -42,26 +52,26 @@ const Get = () => {
         event.target.reset()
     }
 
-    const hendleopenedit = (user) => {
+    const hendleopenedit = (user: Obj) => {
         setnameinp(user.name)
         setageinp(user.age)
         setjobinp(user.job)
         setimginp(user.img)
-        setstatusinp(user.status)
+        setstatusinp(String(user.status))
         setidx(user.id)
         setmodaledit(true)
     }
 
-    const handleeditsubmit = (event) => {
+    const handleeditsubmit = (event: any) => {
         event.preventDefault()
 
-        const newuser = {
-       id: idx,
-       name: event.target.inpname.value,
-       age: event.target.inpage.value,
-       job: event.target.inpjob.value,
-       img: event.target.inpimg.value || "https://i.pravatar.cc/150",
-       status: event.target.inpstatus.value === "true"
+        const newuser: Obj = {
+            id: idx,
+            name: event.target.inpname.value,
+            age: event.target.inpage.value,
+            job: event.target.inpjob.value,
+            img: event.target.inpimg.value || "https://i.pravatar.cc/150",
+            status: event.target.inpstatus.value === "true"
         }
 
         setdata((prev) => prev.map((el) => el.id === idx ? newuser : el))
@@ -69,86 +79,64 @@ const Get = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gray-100 p-4 md:p-8">
-       <div className="mx-auto max-w-6xl">
+      <div className="min-h-screen bg-gray-100 p-4 md:p-8">
 
-           <div className="mb-6 flex items-center justify-between">
-      <div>
-          <h1 className="text-2xl font-bold">Users Management</h1>
-          <p className="text-gray-500">Manage your users easily</p>
+          <div className="mx-auto max-w-6xl">
+
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
+
+
+          <Button onClick={() => setmodaladd(true)} className="bg-green-600 hover:bg-green-700">
+      + Add User
+          </Button>
       </div>
 
-      <Button type="primary" onClick={() => setmodaladd(true)}>
-          + Add User
-      </Button>
-           </div>
+      <Modal open={modaladd}>
+          <h2 className="mb-5 text-xl font-bold text-gray-800">Add New User</h2>
 
-           <Modal open={modaladd}>
-      <h2 className="mb-5 text-xl font-bold">Add New User</h2>
+          <form onSubmit={handlesubmit} className="grid gap-4">
+      <input name="inpname" required className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-green-500" type="text" placeholder="Enter name" />
+      <input name="inpage" required min="1" className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-green-500" type="number" placeholder="Enter age" />
+      <input name="inpjob" required className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-green-500" type="text" placeholder="Enter job" />
+      <input name="inpimg" className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-green-500" type="text" placeholder="Image URL" />
 
-      <form onSubmit={handlesubmit} className="grid gap-4">
+      <select name="inpstatus" defaultValue="true" className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 outline-none">
+          <option value="true">Active</option>
+          <option value="false">Inactive</option>
+      </select>
 
-          <Input name="inpname" required  placeholder="Enter name"/>
+      <div className="flex gap-3">
+          <button type="submit" className="flex-1 rounded-lg bg-green-600 py-3 font-semibold text-white hover:bg-green-700">Add User</button>
+          <button type="button" onClick={() => setmodaladd(false)} className="flex-1 rounded-lg bg-gray-200 py-3 font-semibold text-gray-700">Cancel</button>
+      </div>
+          </form>
+      </Modal>
 
-          <Input name="inpage" required type="text" min="1"  placeholder="Enter age"/>
+      <Modal open={modaledit}>
+          <h2 className="mb-5 text-xl font-bold text-gray-800">Edit User</h2>
 
-          <Input name="inpjob" required  placeholder="Enter job"/>
+          <form onSubmit={handleeditsubmit} className="grid gap-4">
+      <input defaultValue={nameinp} name="inpname" required className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-green-500" type="text" placeholder="Enter name" />
+      <input defaultValue={ageinp} name="inpage" required min="1" className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-green-500" type="number" placeholder="Enter age" />
+      <input defaultValue={jobinp} name="inpjob" required className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-green-500" type="text" placeholder="Enter job" />
+      <input defaultValue={imginp} name="inpimg" className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-green-500" type="text" placeholder="Image URL" />
 
-          <Input name="inpimg"  placeholder="Image URL"/>
+      <select name="inpstatus" defaultValue={statusinp} className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 outline-none">
+          <option value="true">Active</option>
+          <option value="false">Inactive</option>
+      </select>
 
-          <select name="inpstatus" defaultValue="true" className="w-full rounded-lg border p-3">
-     <option value="true">Active</option>
-     <option value="false">Inactive</option>
-          </select>
+      <div className="flex gap-3">
+          <button type="submit" className="flex-1 rounded-lg bg-green-600 py-3 font-semibold text-white hover:bg-green-700">Save Changes</button>
+          <button type="button" onClick={() => setmodaledit(false)} className="flex-1 rounded-lg bg-gray-200 py-3 font-semibold text-gray-700">Cancel</button>
+      </div>
+          </form>
+      </Modal>
 
-          <div className="flex gap-3">
-     <Button htmlType="submit" type="primary" className="flex-1">
-         Add User
-     </Button>
+      <Crud2 data={data} del={Deletedata} hendleopenedit={hendleopenedit} />
 
-     <Button onClick={() => setmodaladd(false)} className="flex-1">
-         Cancel
-     </Button>
           </div>
-
-      </form>
-           </Modal>
-
-           <Modal open={modaledit}>
-      <h2 className="mb-5 text-xl font-bold">Edit User</h2>
-
-      <form onSubmit={handleeditsubmit} className="grid gap-4">
-
-          <Input defaultValue={nameinp} name="inpname" required  placeholder="Enter name"/>
-
-          <Input defaultValue={ageinp} name="inpage" required type="text" min="1"  placeholder="Enter age"/>
-
-          <Input defaultValue={jobinp} name="inpjob" required  placeholder="Enter job"/>
-
-          <Input defaultValue={imginp} name="inpimg" placeholder="Image URL"/>
-
-          <select name="inpstatus" defaultValue={statusinp} className="w-full rounded-lg border p-3">
-     <option value="true">Active</option>
-     <option value="false">Inactive</option>
-          </select>
-
-          <div className="flex gap-3">
-     <Button htmlType="submit" type="primary" className="flex-1">
-         Save Changes
-     </Button>
-
-     <Button onClick={() => setmodaledit(false)} className="flex-1">
-         Cancel
-     </Button>
-          </div>
-
-      </form>
-           </Modal>
-
-           <Crud2 data={data} del={Deletedata} hendleopenedit={hendleopenedit}/>
-
-       </div>
-        </div>
+      </div>
     )
 }
 

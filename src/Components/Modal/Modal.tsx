@@ -1,13 +1,21 @@
-
 import React from 'react'
-import { Modal } from 'antd'
+import {
+    Dialog,
+    DialogContent,
+} from "@/components/ui/dialog"
 
-const MyModal = ({ open, children }) => {
+interface ModalProps {
+    open: boolean
+}
+
+const Modal = ({ open, children }: ModalProps) => {
     return (
-        <Modal open={open} footer={null}>
-            {children}
-        </Modal>
+        <Dialog open={open}>
+            <DialogContent className="p-6">
+                {children}
+            </DialogContent>
+        </Dialog>
     )
 }
 
-export default MyModal
+export default Modal
